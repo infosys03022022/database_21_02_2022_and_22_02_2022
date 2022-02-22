@@ -1,0 +1,184 @@
+CREATE TABLE student_details (
+   roll INTEGER,
+   name VARCHAR2(20),
+   marks NUMBER(5,2)
+   )
+
+INSERT INTO student_details VALUES(1,'Suresh',89);
+INSERT INTO student_details VALUES(2,'Nitin',90);
+INSERT INTO student_details VALUES(3,'John',67)
+
+
+// We have decided that we won't enter marks for the student and 
+// accordingly we started writing the following SQL statement.
+
+ INSERT INTO student_details VALUES(1,'Ranjan')
+
+// ORA-00947: not enough values
+
+INSERT INTO student_details(roll,name) VALUES (1,'Ranjan')
+
+// So provide the name of the columns after the table name student_details followed by the
+// list of values.
+// Providing the column name is essential when we change the sequence of inserting data.
+
+INSERT INTO student_details(name,marks,roll) VALUES ('Souresh',90,2)
+If you dont mention the name of the columns and change the sequence of inserted data , we
+get an error if the datatypes of the inserted data is not matching with the column's data in
+the table. 
+INSERT INTO student_details VALUES ('Souresh',90,2)
+ORA-01722: invalid number
+INSERT INTO student_details(roll,name,marks) VALUES ('Souresh',90,2)
+
+CREATE TABLE student_details_backup (
+   roll INTEGER,
+   name VARCHAR2(20),
+   marks NUMBER(5,2)
+   )
+
+Copy the records where marks is greatly than 80 from student_details table to student_details_backup table.
+
+  INSERT INTO student_details_backup SELECT * FROM student_details WHERE marks>80
+
+
+------------------------------
+SELECT ID, ENAME FROM Employee WHERE SALARY BETWEEN 30000 and 50000
+SELCT ID, ENAME FROM Employee WHERE SALARY>=30000 AND SALARY<=50000
+
+
+SELECT ID, ENAME FROM Employee WHERE ID IN (2,3,4)
+SELECT ID, ENAME FROM Employee WHERE ID=2 OR ID=3 OR ID=4
+SELECT ID, ENAME FROM Employee WHERE ID NOT IN (2,3,4)
+% ====> 0 or more characters matching 
+
+For example
+
+SELECT ID,ENAME FROM Employee WHERE ENAME LIKE 'L%';
+
+// If we have a name only as L, with the above statement it will also match where the name is
+only having the character as L
+SELECT ID, ENAME, DOJ FROM Employee WHERE DOJ LIKE '__-___-__'
+
+
+   id       name     basic
+    1       Abhay    25000
+    2       John     40000
+    3       Rishi    34000
+    4       Abhay    30000
+    5.      Rita     90000
+    6.      Roushan  34000
+
+  SELECT id,name,basic
+  FROM employee
+  ORDER BY name, basic desc
+  
+  id         name     basic
+   4         Abhay    30000
+   1         Abhay    25000
+   2         John     40000
+   3         Rishi    34000
+   5.        Rita     90000
+   6         Roushan  34000   
+     
+id         name     basic         desig     dept
+   4         Abhay    30000       Mgr       Sales
+   1         Abhay    28000       AsstMgr   Mkt
+   2         John     40000       Mgr       Sales
+   3         Rishi    14000       Clerk     Mkt
+   5.        Rita     34000       Mgr       Sales
+   6         Roushan  34000       AsstMgr   Mkt
+
+Find out the number of employees deptwise and within dept , designationwise.
+
+    
+    Sales   Mgr      3
+    Mkt     AsstMgr  2
+    Mkt     Clerk    1
+
+ SELECT dept,desig,count(id)
+ FROM employee
+ GROUP BY dept,desig
+
+
+
+WHERE clause works on single row at a time example with the table given above,
+The requirement is  
+
+Display the employee's id,name where the dept is Sales
+
+   SELECT id,name
+   FROM employee
+   WHERE dept='Sales';
+
+Having works on a set of data . So having is always used with group by clause
+Example    
+  Display the count of employees where designationwise count is more than 1
+  SELECT desig,count(id)
+  FROM employee
+  GROUP BY desig
+
+   DESIG     COUNT
+   Mgr         3
+   AsstMgr     2
+   Clerk       1
+
+  SELECT desig,count(id)
+  FROM employee
+  GROUP BY desig
+  HAVING count(id)>=1
+  
+   DESIG     COUNT
+   Mgr         3
+   AsstMgr     2
+
+
+SELECT desig,count(id)
+  FROM employee
+  GROUP BY desig
+  HAVING count(id)=1
+ 
+ DESIG     COUNT
+ Clerk       1
+
+
+Can we use both where and having together.
+YEs
+
+  Display the designationwise count where the basic is more than 30000 and the count of employees
+  are atleast 2. 
+  SELECT desig,count(id)
+  FROM employee
+  WHERE basic>30000
+  GROUP BY desig
+  HAVING count(id)>=2
+
+  
+STEP 1 FROM employee
+id         name     basic         desig     dept
+   4         Abhay    30000       Mgr       Sales
+   1         Abhay    28000       AsstMgr   Mkt
+   2         John     40000       Mgr       Sales
+   3         Rishi    14000       Clerk     Mkt
+   5.        Rita     34000       Mgr       Sales
+   6         Roushan  34000       AsstMgr   Mkt
+
+STEP 2 
+   WHERE basic>30000
+
+id         name     basic         desig     dept
+ 
+   2         John     40000       Mgr       Sales
+   5.        Rita     34000       Mgr       Sales
+   6         Roushan  34000       AsstMgr   Mkt
+
+STEP 3
+   GROUP BY DESIG
+   Mgr          2
+   AsstMgr      1
+
+STEP4
+  HAVING count(id)>=2
+   Mgr         2
+
+
+  
